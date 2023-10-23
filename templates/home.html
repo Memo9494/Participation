@@ -3,7 +3,14 @@
 {%block content%}
 {% if user.is_authenticated %}
     Hi {{user.username}}! You are {{user.age}} years old.
+
     <p><a href="{%url 'logout' %}">Log out </a></p>
+    {% for attendance in object_list %}
+    <div class = "attendance">
+        <h2><a href="{%url 'attendance_detail' attendance.pk %}"> {{attendance.author}} </a></h2>
+        <p>{{attendace.fecha}}</p>
+    </div>
+    {%endfor%}
 {% else %}
     <p>You are not Logged in </p>
     <a href="{%url 'login'%}">Login</a> |
