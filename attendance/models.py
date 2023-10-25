@@ -8,7 +8,7 @@ class Attendance(models.Model):
         CustomUser,
         on_delete=models.CASCADE,
     )
-    matricula = models.CharField(max_length=10, null=True, blank=True,default=CustomUser.matricula)
+    matricula = models.CharField(max_length=10, null=True, blank=True)
     fecha = models.DateTimeField(auto_now_add=True)
     valor = models.BooleanField(default=False)
 
@@ -18,6 +18,12 @@ class Attendance(models.Model):
     def get_absolute_url(self):
         return reverse('post_detail', args=[str(self.id)])
     
+    def get_alumno_matricula(self):
+        return self.alumno.matricula
+
     def save(self, *args, **kwargs):
-        self.matricula = self.alumno.matricula
+        self.matricula = self.get_alumno_matricula()
         super().save(*args, **kwargs)
+
+
+
