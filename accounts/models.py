@@ -19,6 +19,9 @@ class CustomUser(AbstractUser):
     def encrypt_nombre(self, nombre):
         if nombre:
             encrypted_nombre = cipher_suite.encrypt(nombre.encode())
+            #use only the string data
+            encrypted_nombre = encrypted_nombre.decode()
+            print(encrypted_nombre)
             return encrypted_nombre
         return None
 

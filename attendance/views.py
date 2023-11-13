@@ -10,6 +10,13 @@ from cryptography.fernet import Fernet
 
 
 
+def decrypt_name(encrypted_name):
+    if encrypted_name:
+        secret_key = b'HCSP-XM-YJ7L4Z_1HN7_Y86v75l0UZpejRBSq_CAv8A='
+        cypher_suite = Fernet(secret_key)   
+        decrypted_name = cypher_suite.decrypt(encrypted_name).decode()
+        return decrypted_name
+    return None
 
 
 
@@ -20,26 +27,34 @@ class AttendanceListView(ListView):
 
 
     def get_context_data(self, **kwargs):
+        
         context = super().get_context_data(**kwargs)
         # Decrypting nombre and apellido for each Attendance object
         for attendance in context['object_list']:
-            print(attendance.alumno.nombre)
-            attendance.alumno.nombre = self.decrypt_name(attendance.alumno.nombre)
-            attendance.alumno.apellido = self.decrypt_name(attendance.alumno.apellido)
+            #pass attendance.alumno.nombre to bytes
+            fname = attendance.alumno.nombre.encode('utf-8')
+            lname = attendance.alumno.apellido.encode('utf-8')
+            attendance.alumno.nombre = decrypt_name(fname)
+            attendance.alumno.apellido = decrypt_name(lname)
         return context
 
-    def decrypt_name(self, encrypted_name):
-        if encrypted_name:
-            secret_key = b'HCSP-XM-YJ7L4Z_1HN7_Y86v75l0UZpejRBSq_CAv8A='
-            cypher_suite = Fernet(secret_key)
-            decrypted_name = cypher_suite.decrypt(encrypted_name).decode('utf-8')
-            return decrypted_name
-        return None
+
+
+
 
 class AttendanceDetailView(DetailView):
     model = Attendance
     template_name = 'attendance_detail.html'
     context_object_name = 'attendance_obj'
+    print(context_object_name)
+    def get_context_data(self, **kwargs):
+        
+        context = super().get_context_data(**kwargs)
+        print(context)
+        context['attendance_obj'].alumno.nombre = decrypt_name(context['attendance_obj'].alumno.nombre.encode('utf-8'))
+        context['attendance_obj'].alumno.apellido = decrypt_name(context['attendance_obj'].alumno.apellido.encode('utf-8'))
+        return context
+    
 
 class AttendanceCreateView(CreateView):
     model = Attendance

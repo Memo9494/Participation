@@ -9,6 +9,7 @@ print(cipher_suite)
 
 encrypted_nombre = cipher_suite.encrypt(nombre.encode())
 print(encrypted_nombre)
+encrypted_nombre = encrypted_nombre.decode()
 print(encrypted_nombre)
 print(len(encrypted_nombre))
 
